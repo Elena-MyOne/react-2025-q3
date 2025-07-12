@@ -1,6 +1,6 @@
 import React from 'react';
-import './App.css';
 import ErrorBoundary from './components/ErrorBoundary';
+// import Header from './components/Header';
 
 interface AppProps {
   isLoading: boolean;
@@ -30,7 +30,7 @@ export default class App extends React.Component<object, AppProps> {
     return (
       <>
         <ErrorBoundary isClichedErrorButton={isClichedErrorButton}>
-          Hello
+          {/* <Header value={''} handleSearch={() => {}} /> */}
           <button
             className="bg-green-400 hover:bg-green-500 py-2 px-4 duration-300"
             onClick={this.throwError}
