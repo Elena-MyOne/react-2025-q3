@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
-import { LOCAL_STORAGE_VALUE } from './consts';
+import { BASE_URL, LOCAL_STORAGE_VALUE } from './consts';
 import type { CharactersData, CharacterData } from './models/interfaces';
 import CharacterCard from './components/CharacterCard';
 import Header from './components/Header';
@@ -11,6 +11,7 @@ interface AppProps {
   error: Error | null | unknown;
   characters: CharacterData[];
   errorMessage: string;
+  searchQuery: string;
 }
 export default class App extends React.Component<object, AppProps> {
   constructor(props: AppProps) {
@@ -21,9 +22,12 @@ export default class App extends React.Component<object, AppProps> {
       error: null,
       characters: [],
       errorMessage: '',
+      searchQuery: '',
     };
 
     this.throwError = this.throwError.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.getSearchQuery = this.getSearchQuery.bind(this);
   }
 
   throwError() {
@@ -33,10 +37,63 @@ export default class App extends React.Component<object, AppProps> {
     console.error('Error: The Error boundary button was triggered');
   }
 
+  getSearchQuery() {
+    const searchQuery = localStorage.getItem(LOCAL_STORAGE_VALUE) || '';
+    this.setState({ searchQuery });
+    return searchQuery;
+  }
+
+  async handleSearch() {
+    const searchQuery = this.getSearchQuery();
+    const { characters } = this.state;
+
+    if (!searchQuery) {
+      this.setState({ errorMessage: '', error: null });
+      if (!characters.length || !searchQuery) {
+        this.getCharacters();
+        return;
+      }
+      return;
+    }
+
+    this.setState({ isLoading: true });
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/?name=${searchQuery.toLowerCase()}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Character "${searchQuery}" not found`);
+      }
+
+      const data = await response.json();
+      const characters: CharacterData[] = data.results;
+
+      console.log(data);
+
+      this.setState({
+        isLoading: false,
+        characters: characters,
+        error: null,
+        errorMessage: '',
+      });
+    } catch (error) {
+      console.log(`Character ${searchQuery} not found:`, error);
+
+      this.setState({
+        isLoading: false,
+        characters: [],
+        error,
+        errorMessage: `Character "${searchQuery}" is not found, Please try searching for another one.`,
+      });
+    }
+  }
+
   async componentDidMount(): Promise<void> {
     const searchQuery = localStorage.getItem(LOCAL_STORAGE_VALUE);
     if (searchQuery) {
-      // this.handleSearch();
+      this.handleSearch();
       return;
     }
 
@@ -47,12 +104,11 @@ export default class App extends React.Component<object, AppProps> {
     this.setState({ isLoading: true });
 
     try {
-      const response = await fetch('https://rickandmortyapi.com/api/character');
+      const response = await fetch(BASE_URL);
 
       const data: CharactersData = await response.json();
       const characters: CharacterData[] = data.results;
 
-      console.log(characters);
       this.setState({
         characters: characters,
         isLoading: false,
@@ -74,10 +130,10 @@ export default class App extends React.Component<object, AppProps> {
       this.state;
 
     return (
-      <>
-        <Header value={''} handleSearch={() => {}} />
+      <div className="min-h-screen m-auto px-0 py-4 md:container justify-between align-top">
+        <Header value="" handleSearch={this.handleSearch} />
         <ErrorBoundary isClichedErrorButton={isClichedErrorButton}>
-          <main className="m-auto px-0 py-4 md:container justify-center">
+          <main className="px-0 py-4">
             {errorMessage ? (
               <div className="text-red-500 text-center pt-4">
                 <span>{errorMessage}</span>
@@ -107,7 +163,7 @@ export default class App extends React.Component<object, AppProps> {
             </div>
           </main>
         </ErrorBoundary>
-      </>
+      </div>
     );
   }
 }

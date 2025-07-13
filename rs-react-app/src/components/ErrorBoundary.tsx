@@ -33,12 +33,14 @@ export default class ErrorBoundary extends React.Component<
 
     if (hasError || isClichedErrorButton) {
       return (
-        <div className="flex justify-center items-center p-4 bg-red-500">
-          <span className="text-xl">
-            <BiError />
-          </span>
-          <p>Error occurred. Please restart the page or try again later</p>
-        </div>
+        <>
+          <div className="flex justify-center items-center p-4 bg-red-500">
+            <span className="text-xl">
+              <BiError />
+            </span>
+            <p>Error occurred. Please restart the page or try again later</p>
+          </div>
+        </>
       );
     }
     return this.props.children;
