@@ -52,7 +52,7 @@ export default class Header extends React.Component<
         <div className="font-bold text-primary text-xl text-green-500">
           Rick And Morty
         </div>
-        <form onSubmit={this.handleSearchForm}>
+        <form onSubmit={this.handleSearchForm} data-testid="search-form">
           <div className="flex items-center">
             <input
               type="text"
