@@ -11,13 +11,14 @@ export default defineConfig({
     setupFiles: ['./src/setupTests.ts'],
     coverage: {
       exclude: [
-        './.eslintrc.cjs',
+        './eslint.config.js',
         './vite.config.ts',
         'src/**/*.test.{js,jsx,ts,tsx}',
         'src/**/*.spec.{js,jsx,ts,tsx}',
         'src/index.{js,jsx,ts,tsx}',
         'src/setupTests.{js,ts}',
         'src/**/*.d.ts',
+        'src/routes.ts',
       ],
     },
   },
