@@ -41,4 +41,11 @@ describe('App component', () => {
     const errorMessage = await screen.findByText(/Data can not be downloaded/i);
     expect(errorMessage).toBeInTheDocument();
   });
+
+  it('renders the error boundary button', () => {
+    render(<App />);
+    expect(
+      screen.getByRole('button', { name: /ErrorBoundary/i })
+    ).toBeInTheDocument();
+  });
 });
