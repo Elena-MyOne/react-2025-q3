@@ -25,22 +25,22 @@ export default function Header({ handleSearch }: HeaderProps) {
   };
 
   return (
-    <header className="flex m-auto gap-4 border-b border-gray-200 p-0 py-4 md:container justify-between items-center">
-      <div className="font-bold text-primary text-xl text-green-500">
+    <header className="flex m-auto gap-4 border-b border-gray-200 p-0 py-4 md:container justify-between items-center bg-white">
+      <div className="font-bold text-primary text-xl text-green-600">
         Rick And Morty
       </div>
       <form onSubmit={handleSearchForm} data-testid="search-form">
         <div className="flex items-center">
           <input
             type="text"
-            className="grow border-gray-300 border-[1px] p-2"
+            className="grow border-gray-300 border-[1px] p-2 bg-white"
             placeholder="Search..."
             value={value}
             onChange={handleChange}
           />
           <button
             type="submit"
-            className="text-2xl cursor-pointer text-black border-[1px] border-transparent bg-green-400 hover:bg-green-500 p-2"
+            className="text-2xl cursor-pointer text-black border-[1px] border-transparent bg-green-500 hover:bg-green-600 p-2 duration-300"
             onClick={handleSearchButton}
           >
             <CiSearch />

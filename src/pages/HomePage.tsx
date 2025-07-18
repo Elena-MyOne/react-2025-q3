@@ -41,7 +41,7 @@ export default function HomePage({
         )}
         <div className="m-auto w-full mt-4">
           <button
-            className="bg-green-400 hover:bg-green-500 w-full py-2 px-4 duration-300"
+            className="bg-green-500 hover:bg-green-600 hover:text-white p-2 duration-300 w-full py-2 px-4 duration-300"
             onClick={throwError}
           >
             ErrorBoundary
