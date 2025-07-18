@@ -18,8 +18,16 @@ export default function HomePage({
   throwError,
 }: HomePageProps) {
   return (
-    <div className="min-h-screen m-auto px-0 py-4 md:container justify-between align-top">
+    <div className="m-auto px-0 py-4 justify-between align-top">
       <ErrorBoundary isClichedErrorButton={isClichedErrorButton}>
+        <div className="m-auto w-full mt-4">
+          <button
+            className="bg-green-500 hover:bg-green-600 hover:text-white p-2 duration-300 w-full py-2 px-4 duration-300"
+            onClick={throwError}
+          >
+            ErrorBoundary
+          </button>
+        </div>
         {errorMessage ? (
           <div className="text-red-500 text-center pt-4">
             <span>{errorMessage}</span>
@@ -39,14 +47,6 @@ export default function HomePage({
             </div>
           </>
         )}
-        <div className="m-auto w-full mt-4">
-          <button
-            className="bg-green-500 hover:bg-green-600 hover:text-white p-2 duration-300 w-full py-2 px-4 duration-300"
-            onClick={throwError}
-          >
-            ErrorBoundary
-          </button>
-        </div>
       </ErrorBoundary>
     </div>
   );

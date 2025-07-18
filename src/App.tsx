@@ -6,6 +6,7 @@ import { BASE_URL, LOCAL_STORAGE_VALUE } from './consts';
 import type { CharactersData, CharacterData } from './models/interfaces';
 import Layout from './components/Layout';
 import NotFoundPage from './pages/NotFound';
+import AboutPage from './components/AboutPage';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -100,6 +101,7 @@ export default function App() {
             />
           }
         />
+        <Route path={ROUTE_PATHS.ABOUT} element={<AboutPage />} />
         <Route path={ROUTE_PATHS.NOTFOUND} element={<NotFoundPage />} />
       </Route>
     </Routes>
