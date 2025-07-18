@@ -1,23 +1,32 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
 import { server } from '../mocks/server';
 import { http, HttpResponse } from 'msw';
 import { BASE_URL } from '../consts';
+import HomePage from '../pages/HomePage';
+import { mockCharactersList } from '../mocks/mockCharactersList';
 
-describe('App component', () => {
+const baseProps = {
+  isLoading: false,
+  isClichedErrorButton: false,
+  characters: mockCharactersList.results,
+  errorMessage: '',
+  throwError: vi.fn(),
+};
+
+describe('HomePage component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('displays loader when loading', async () => {
-    render(<App />);
+    render(<HomePage {...baseProps} isLoading={true} />);
     const loader = screen.getByText(/Loading .../i);
     expect(loader).toBeInTheDocument();
   });
 
   it('displays cards list after successful fetch', async () => {
-    render(<App />);
+    render(<HomePage {...baseProps} />);
     const card1 = await screen.findByText(/Rick Sanchez/);
     const card2 = await screen.findByText(/Morty Smith/);
     const card3 = await screen.findByText(/Summer Smith/);
@@ -36,14 +45,20 @@ describe('App component', () => {
       })
     );
 
-    render(<App />);
+    render(
+      <HomePage
+        {...baseProps}
+        errorMessage="Data can not be downloaded"
+        characters={[]}
+      />
+    );
 
     const errorMessage = await screen.findByText(/Data can not be downloaded/i);
     expect(errorMessage).toBeInTheDocument();
   });
 
   it('renders the error boundary button', () => {
-    render(<App />);
+    render(<HomePage {...baseProps} />);
     expect(
       screen.getByRole('button', { name: /ErrorBoundary/i })
     ).toBeInTheDocument();
