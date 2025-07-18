@@ -31,7 +31,7 @@ export default function Header({ handleSearch }: HeaderProps) {
       <Link
         to={ROUTE_PATHS.HOME}
         className="font-bold text-primary text-3xl text-green-500 duration-300 hover:text-green-700"
-        style={{ fontFamily: 'Creepster, cursive' }}
+        style={{ fontFamily: 'Permanent Marker, cursive' }}
       >
         Rick And Morty
       </Link>

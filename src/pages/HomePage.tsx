@@ -1,6 +1,7 @@
 import ErrorBoundary from '../components/ErrorBoundary';
 import type { CharacterData } from '../models/interfaces';
 import CharacterCard from '../components/CharacterCard';
+import Pagination from '../components/Pagination';
 
 interface HomePageProps {
   isLoading: boolean;
@@ -8,6 +9,9 @@ interface HomePageProps {
   characters: CharacterData[];
   errorMessage: string;
   throwError: () => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  pages: number;
 }
 
 export default function HomePage({
@@ -16,6 +20,9 @@ export default function HomePage({
   characters,
   errorMessage,
   throwError,
+  pages,
+  currentPage,
+  setCurrentPage,
 }: HomePageProps) {
   return (
     <div className="m-auto px-0 py-4 justify-between align-top">
@@ -45,6 +52,15 @@ export default function HomePage({
                 <CharacterCard key={character.id} character={character} />
               ))}
             </div>
+            {pages > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                pages={pages}
+                prevPage={currentPage > 1}
+                nextPage={currentPage < pages}
+                setCurrentPage={setCurrentPage}
+              />
+            )}
           </>
         )}
       </ErrorBoundary>

@@ -15,6 +15,8 @@ export default function App() {
   const [characters, setCharacters] = useState<CharacterData[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   const throwError = () => {
     setIsClichedErrorButton(true);
@@ -27,12 +29,13 @@ export default function App() {
     return stored;
   }, []);
 
-  const getCharacters = useCallback(async () => {
+  const getCharacters = useCallback(async (page = 1) => {
     setIsLoading(true);
     try {
-      const response = await fetch(BASE_URL);
+      const response = await fetch(`${BASE_URL}?page=${page}`);
       const data: CharactersData = await response.json();
       setCharacters(data.results);
+      setTotalPages(data.info.pages);
       setError(null);
       setErrorMessage('');
     } catch (err) {
@@ -44,44 +47,50 @@ export default function App() {
     }
   }, []);
 
-  const handleSearch = useCallback(async () => {
-    const query = getSearchQuery();
-    if (!query) {
-      setErrorMessage('');
-      setError(null);
-      getCharacters();
-      return;
-    }
+  const handleSearch = useCallback(
+    async (page = 1) => {
+      const query = getSearchQuery();
+      if (!query) {
+        setErrorMessage('');
+        setError(null);
+        getCharacters();
+        return;
+      }
 
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${BASE_URL}/?name=${query.toLowerCase()}`);
-      if (!response.ok) throw new Error(`Character "${query}" not found`);
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `${BASE_URL}/?name=${query.toLowerCase()}&page=${page}`
+        );
+        if (!response.ok) throw new Error(`Character "${query}" not found`);
 
-      const data = await response.json();
-      setCharacters(data.results);
-      setError(null);
-      setErrorMessage('');
-    } catch (err) {
-      console.error(`Character ${query} not found:`, err);
-      setCharacters([]);
-      setError(err as Error);
-      setErrorMessage(
-        `Character "${query}" is not found, Please try searching for another one.`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [getCharacters, getSearchQuery]);
+        const data = await response.json();
+        setCharacters(data.results);
+        setTotalPages(data.info.pages);
+        setError(null);
+        setErrorMessage('');
+      } catch (err) {
+        console.error(`Character ${query} not found:`, err);
+        setCharacters([]);
+        setError(err as Error);
+        setErrorMessage(
+          `Character "${query}" is not found, Please try searching for another one.`
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [getCharacters, getSearchQuery]
+  );
 
   useEffect(() => {
     const storedQuery = localStorage.getItem(LOCAL_STORAGE_VALUE);
     if (storedQuery) {
-      handleSearch();
+      handleSearch(currentPage);
     } else {
-      getCharacters();
+      getCharacters(currentPage);
     }
-  }, [handleSearch, getCharacters]);
+  }, [handleSearch, getCharacters, currentPage]);
 
   return (
     <Routes>
@@ -98,6 +107,9 @@ export default function App() {
               characters={characters}
               errorMessage={errorMessage}
               throwError={throwError}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              pages={totalPages}
             />
           }
         />
