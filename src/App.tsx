@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { ROUTE_PATHS } from './routes';
 import { useCallback, useEffect, useState } from 'react';
@@ -17,6 +17,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const throwError = () => {
     setIsClichedErrorButton(true);
@@ -92,6 +93,25 @@ export default function App() {
     }
   }, [handleSearch, getCharacters, currentPage]);
 
+  useEffect(() => {
+    const pageFromUrl = parseInt(searchParams.get('page') || '1');
+    if (pageFromUrl !== currentPage) {
+      setCurrentPage(pageFromUrl);
+    }
+  }, [currentPage, searchParams]);
+
+  const updatePage = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
+      setSearchParams({ page: String(page) });
+    },
+    [setSearchParams]
+  );
+
+  useEffect(() => {
+    updatePage(currentPage);
+  }, [updatePage, currentPage]);
+
   return (
     <Routes>
       <Route
@@ -108,7 +128,7 @@ export default function App() {
               errorMessage={errorMessage}
               throwError={throwError}
               currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
+              setCurrentPage={updatePage}
               pages={totalPages}
             />
           }
