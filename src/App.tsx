@@ -1,4 +1,4 @@
-import { Route, Routes, useSearchParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { ROUTE_PATHS } from './routes';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,6 +7,7 @@ import type { CharactersData, CharacterData } from './models/interfaces';
 import Layout from './components/Layout';
 import NotFoundPage from './pages/NotFound';
 import AboutPage from './components/AboutPage';
+import DetailsPage from './pages/DetailsPage';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const throwError = () => {
     setIsClichedErrorButton(true);
@@ -103,9 +105,13 @@ export default function App() {
   const updatePage = useCallback(
     (page: number) => {
       setCurrentPage(page);
-      setSearchParams({ page: String(page) });
+      if (location.pathname.startsWith('/details')) {
+        return;
+      } else {
+        setSearchParams({ page: String(page) });
+      }
     },
-    [setSearchParams]
+    [location.pathname, setSearchParams]
   );
 
   useEffect(() => {
@@ -132,7 +138,9 @@ export default function App() {
               pages={totalPages}
             />
           }
-        />
+        >
+          <Route path={ROUTE_PATHS.DETAILS} element={<DetailsPage />} />
+        </Route>
         <Route path={ROUTE_PATHS.ABOUT} element={<AboutPage />} />
         <Route path={ROUTE_PATHS.NOTFOUND} element={<NotFoundPage />} />
       </Route>

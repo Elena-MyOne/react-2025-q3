@@ -3,6 +3,7 @@ import type { CharacterData } from '../models/interfaces';
 import CharacterCard from '../components/CharacterCard';
 import Pagination from '../components/Pagination';
 import Loader from '../components/Loader';
+import { Outlet } from 'react-router-dom';
 
 interface HomePageProps {
   isLoading: boolean;
@@ -53,10 +54,15 @@ export default function HomePage({
         ) : (
           <>
             {isLoading && <Loader />}
-            <div className="flex flex-wrap justify-center gap-6 py-4">
-              {characters.map((character) => (
-                <CharacterCard key={character.id} character={character} />
-              ))}
+            <div className="flex gap-6">
+              <div className="flex flex-wrap justify-center gap-6 py-4 grow">
+                {characters.map((character) => (
+                  <CharacterCard key={character.id} character={character} />
+                ))}
+              </div>
+              <div>
+                <Outlet />
+              </div>
             </div>
           </>
         )}
