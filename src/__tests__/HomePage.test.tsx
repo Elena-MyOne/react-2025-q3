@@ -5,6 +5,7 @@ import { http, HttpResponse } from 'msw';
 import { BASE_URL } from '../consts';
 import HomePage from '../pages/HomePage';
 import { mockCharactersList } from '../mocks/mockCharactersList';
+import { BrowserRouter } from 'react-router-dom';
 
 const baseProps = {
   isLoading: false,
@@ -12,6 +13,9 @@ const baseProps = {
   characters: mockCharactersList.results,
   errorMessage: '',
   throwError: vi.fn(),
+  pages: mockCharactersList.info.pages,
+  currentPage: 1,
+  setCurrentPage: vi.fn<(page: number) => void>(),
 };
 
 describe('HomePage component', () => {
@@ -20,13 +24,21 @@ describe('HomePage component', () => {
   });
 
   it('displays loader when loading', async () => {
-    render(<HomePage {...baseProps} isLoading={true} />);
+    render(
+      <BrowserRouter>
+        <HomePage {...baseProps} isLoading={true} />
+      </BrowserRouter>
+    );
     const loader = screen.getByText(/Loading .../i);
     expect(loader).toBeInTheDocument();
   });
 
   it('displays cards list after successful fetch', async () => {
-    render(<HomePage {...baseProps} />);
+    render(
+      <BrowserRouter>
+        <HomePage {...baseProps} />
+      </BrowserRouter>
+    );
     const card1 = await screen.findByText(/Rick Sanchez/);
     const card2 = await screen.findByText(/Morty Smith/);
     const card3 = await screen.findByText(/Summer Smith/);
@@ -46,11 +58,13 @@ describe('HomePage component', () => {
     );
 
     render(
-      <HomePage
-        {...baseProps}
-        errorMessage="Data can not be downloaded"
-        characters={[]}
-      />
+      <BrowserRouter>
+        <HomePage
+          {...baseProps}
+          errorMessage="Data can not be downloaded"
+          characters={[]}
+        />
+      </BrowserRouter>
     );
 
     const errorMessage = await screen.findByText(/Data can not be downloaded/i);
@@ -58,7 +72,11 @@ describe('HomePage component', () => {
   });
 
   it('renders the error boundary button', () => {
-    render(<HomePage {...baseProps} />);
+    render(
+      <BrowserRouter>
+        <HomePage {...baseProps} />
+      </BrowserRouter>
+    );
     expect(
       screen.getByRole('button', { name: /ErrorBoundary/i })
     ).toBeInTheDocument();
