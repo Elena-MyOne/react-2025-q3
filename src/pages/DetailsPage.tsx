@@ -24,7 +24,6 @@ export default function DetailsPage() {
       const data = await response.json();
       setCharacter(data);
       setIsLoading(false);
-      console.log(data);
     } catch (error) {
       console.error('Cannot get character by id', error);
       setIsLoading(false);
@@ -57,7 +56,6 @@ export default function DetailsPage() {
               <p>Species: {character.species}</p>
               <p>Status: {character.status}</p>
               <p>Type: {character.type ? character.type : 'unknown'}</p>
-              <p>Gender: {character.gender ? character.gender : 'unknown'}</p>
               <button
                 className="text-center cursor-pointer text-black duration-300 border-[1px] border border-transparent bg-green-400 hover:bg-green-500 p-2 my-4"
                 onClick={() => navigate(`${ROUTE_PATHS.HOME}`)}
