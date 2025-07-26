@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { CharacterData } from '../models/interfaces';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface CharacterCardProps {
   character: CharacterData;
@@ -9,6 +9,7 @@ interface CharacterCardProps {
 export default function CharacterCard({ character }: CharacterCardProps) {
   const [currentCharacter] = useState<CharacterData>(character);
   const { name, image, gender, species, id } = currentCharacter;
+  const location = useLocation();
 
   return (
     <div
@@ -24,7 +25,7 @@ export default function CharacterCard({ character }: CharacterCardProps) {
         <p>Species: {species}</p>
         <div className="text-center mt-4 mb-2">
           <Link
-            to={`/details/${id}`}
+            to={`/details/${id}${location.search}`}
             className="text-center cursor-pointer text-black duration-300 border-[1px] border border-transparent bg-green-400 hover:bg-green-500 p-2 my-4"
           >
             Learn More

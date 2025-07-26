@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { ROUTE_PATHS } from './routes';
 import { useCallback, useEffect, useState } from 'react';
@@ -19,7 +19,6 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
 
   const throwError = () => {
     setIsClichedErrorButton(true);
@@ -50,17 +49,29 @@ export default function App() {
     }
   }, []);
 
+  const updateSearchQuery = useCallback(
+    (name: string, page: number = 1) => {
+      setSearchQuery(name);
+      setCurrentPage(page);
+      setSearchParams({ name, page: String(page) });
+    },
+    [setSearchParams]
+  );
+
   const handleSearch = useCallback(
     async (page = 1) => {
       const query = getSearchQuery();
       if (!query) {
         setErrorMessage('');
         setError(null);
+        setSearchParams({ page: String(page) });
         getCharacters();
         return;
       }
 
       setIsLoading(true);
+      updateSearchQuery(query, page);
+
       try {
         const response = await fetch(
           `${BASE_URL}/?name=${query.toLowerCase()}&page=${page}`
@@ -83,7 +94,7 @@ export default function App() {
         setIsLoading(false);
       }
     },
-    [getCharacters, getSearchQuery]
+    [getCharacters, getSearchQuery, setSearchParams, updateSearchQuery]
   );
 
   useEffect(() => {
@@ -104,14 +115,15 @@ export default function App() {
 
   const updatePage = useCallback(
     (page: number) => {
+      const currentSearchName = searchParams.get('name') || '';
       setCurrentPage(page);
-      if (location.pathname.startsWith('/details')) {
-        return;
+      if (currentSearchName) {
+        setSearchParams({ page: String(page), name: currentSearchName });
       } else {
         setSearchParams({ page: String(page) });
       }
     },
-    [location.pathname, setSearchParams]
+    [searchParams, setSearchParams]
   );
 
   useEffect(() => {

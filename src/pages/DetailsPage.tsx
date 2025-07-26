@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ROUTE_PATHS } from '../routes';
 import { useCallback, useEffect, useState } from 'react';
 import { BASE_URL } from '../consts';
@@ -8,6 +8,7 @@ import type { CharacterData } from '../models/interfaces';
 export default function DetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [character, setCharacter] = useState<CharacterData | null>(null);
@@ -58,7 +59,9 @@ export default function DetailsPage() {
               <p>Type: {character.type ? character.type : 'unknown'}</p>
               <button
                 className="text-center cursor-pointer text-black duration-300 border-[1px] border border-transparent bg-green-400 hover:bg-green-500 p-2 my-4"
-                onClick={() => navigate(`${ROUTE_PATHS.HOME}`)}
+                onClick={() =>
+                  navigate(`${ROUTE_PATHS.HOME}${location.search}`)
+                }
               >
                 Close details
               </button>
