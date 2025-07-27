@@ -38,7 +38,9 @@ export default function Pagination({
       >
         Previous
       </button>
-      <div className="px-4 py-2 rounded">{currentPage}</div>
+      <div className="px-4 py-2 rounded" data-testid="page">
+        {currentPage}
+      </div>
       {pages !== currentPage && (
         <>
           <div className="">...</div>
