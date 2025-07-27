@@ -8,6 +8,7 @@ interface ErrorBoundaryProps {
 
 interface Props {
   hasError: boolean;
+  error: string;
 }
 
 export default class ErrorBoundary extends React.Component<
@@ -18,27 +19,34 @@ export default class ErrorBoundary extends React.Component<
     super(props);
     this.state = {
       hasError: false,
+      error: '',
     };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    console.log('Error: ', errorInfo);
     console.log('Error: ', error);
-    console.log('Error info: ', errorInfo);
-    this.setState({ hasError: true });
+    this.setState({ hasError: true, error: `${error}` });
   }
 
   render() {
-    const { hasError } = this.state;
+    const { hasError, error } = this.state;
     const { isClichedErrorButton } = this.props;
 
     if (hasError || isClichedErrorButton) {
       return (
         <>
-          <div className="flex justify-center items-center p-4 bg-red-500">
-            <span className="text-xl">
+          <div className="flex justify-center items-center gap-8 p-4 bg-red-500">
+            <span className="text-4xl">
               <BiError />
             </span>
-            <p>Error occurred. Please restart the page or try again later</p>
+            <div className="">
+              <p>
+                Error:{' '}
+                {error?.toString() || 'The Error boundary button was triggered'}
+              </p>
+              <p>Please restart the page or try again later</p>
+            </div>
           </div>
         </>
       );

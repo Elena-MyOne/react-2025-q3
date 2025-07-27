@@ -30,9 +30,7 @@ describe('ErrorBoundary component', () => {
       </ErrorBoundary>
     );
 
-    const text = screen.getByText(
-      'Error occurred. Please restart the page or try again later'
-    );
+    const text = screen.getByText('Please restart the page or try again later');
 
     expect(text).toBeInTheDocument();
   });

@@ -40,9 +40,7 @@ describe('App component', () => {
     errorBtn.click();
 
     expect(
-      await screen.findByText(
-        /Error occurred. Please restart the page or try again later/i
-      )
+      await screen.findByText(/Please restart the page or try again later/i)
     ).toBeInTheDocument();
   });
 
