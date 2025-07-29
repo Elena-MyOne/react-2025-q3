@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { CharacterData } from '../models/interfaces';
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from '../hooks/useTheme';
+import { THEME } from '../consts';
 
 interface CharacterCardProps {
   character: CharacterData;
@@ -10,10 +12,11 @@ export default function CharacterCard({ character }: CharacterCardProps) {
   const [currentCharacter] = useState<CharacterData>(character);
   const { name, image, gender, species, id } = currentCharacter;
   const location = useLocation();
+  const { theme } = useTheme();
 
   return (
     <div
-      className="bg-gray-50 hover:shadow-lg cursor-pointer duration-300 shadow-md border w-[300px] relative"
+      className={`${theme === THEME.LIGHT ? 'bg-gray-50' : 'bg-black'}  hover:shadow-lg cursor-pointer duration-300 shadow-md border w-[300px] relative`}
       data-testid="card"
     >
       <figure className="flex items-center justify-center w-[299px] h-[299px]">

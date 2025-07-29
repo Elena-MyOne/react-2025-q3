@@ -10,6 +10,16 @@ body {
   flex-direction: column;
 }
 
+body > #root > .light {
+  background-color: white;
+  color: black;
+}
+
+body #root > .dark {
+  background-color: black;
+  color: white;
+}
+
 #root {
   display: flex;
   flex-direction: column;

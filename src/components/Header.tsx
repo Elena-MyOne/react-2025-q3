@@ -3,6 +3,7 @@ import { LOCAL_STORAGE_VALUE } from '../consts';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { Link } from 'react-router-dom';
 import { ROUTE_PATHS } from '../routes';
+import ThemeButton from './ThemeButton';
 
 interface HeaderProps {
   value: string;
@@ -27,7 +28,7 @@ export default function Header({ handleSearch }: HeaderProps) {
   };
 
   return (
-    <header className="flex m-auto gap-4 border-b border-gray-200 p-0 py-4 md:container justify-between items-center bg-white">
+    <header className="flex m-auto gap-4  p-0 py-4 md:container justify-between items-center ">
       <Link
         to={ROUTE_PATHS.HOME}
         className="font-bold text-primary text-3xl text-green-500 duration-300 hover:text-green-700"
@@ -36,6 +37,7 @@ export default function Header({ handleSearch }: HeaderProps) {
         Rick And Morty
       </Link>
       <div className="flex items-center gap-10 ">
+        <ThemeButton />
         <Link
           to={ROUTE_PATHS.ABOUT}
           className="font-medium text-green-600 cursor-pointer duration-300 hover:text-green-700 text-lg"

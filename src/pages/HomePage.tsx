@@ -31,7 +31,7 @@ export default function HomePage({
       <ErrorBoundary isClichedErrorButton={isClichedErrorButton}>
         <div className="m-auto mt-4 flex justify-between items-center">
           <button
-            className="bg-green-500 hover:bg-green-600 hover:text-white p-2 duration-300  py-2 px-4"
+            className="bg-green-500 hover:bg-green-600 hover:text-white p-2 duration-300  py-2 px-4 text-black"
             onClick={throwError}
           >
             ErrorBoundary

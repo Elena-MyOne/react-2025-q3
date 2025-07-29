@@ -1,9 +1,10 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ROUTE_PATHS } from '../routes';
 import { useCallback, useEffect, useState } from 'react';
-import { BASE_URL } from '../consts';
+import { BASE_URL, THEME } from '../consts';
 import Loader from '../components/Loader';
 import type { CharacterData } from '../models/interfaces';
+import { useTheme } from '../hooks/useTheme';
 
 export default function DetailsPage() {
   const { id } = useParams();
@@ -12,6 +13,7 @@ export default function DetailsPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [character, setCharacter] = useState<CharacterData | null>(null);
+  const { theme } = useTheme();
 
   const getCharacterById = useCallback(async () => {
     setIsLoading(true);
@@ -37,9 +39,11 @@ export default function DetailsPage() {
   }, [getCharacterById, id]);
 
   return (
-    <div className="bg-white text-center mt-4">
+    <div
+      className={`${theme === THEME.LIGHT ? 'bg-gray-50' : 'bg-black'} text-center mt-4`}
+    >
       {isLoading ? (
-        <div className="min-w-[300px]">
+        <div className="min-w-[300px] py-10">
           <Loader />
         </div>
       ) : (
