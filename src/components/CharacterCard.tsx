@@ -47,7 +47,7 @@ export default function CharacterCard({ character }: CharacterCardProps) {
     >
       <button
         data-testid="icon"
-        className={`${selectedItems.some((item) => item.id === character.id) ? 'text-green-400 hover:text-green-500' : 'text-gray-800 hover:text-green-400'} absolute top-0 right-0 bg-gray-100 -700 p-2 text-xl duration-300 `}
+        className={`${selectedItems.some((item) => item.id === character.id) ? 'text-green-500 hover:text-green-600' : 'text-gray-800 hover:text-green-400'} absolute top-0 right-0 bg-gray-100 -700 p-2 text-xl duration-300 `}
         onClick={() => handleSelectedItem(character)}
       >
         <IoHeart />

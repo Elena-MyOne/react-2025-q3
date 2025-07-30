@@ -4,6 +4,9 @@ import CharacterCard from '../components/CharacterCard';
 import Pagination from '../components/Pagination';
 import Loader from '../components/Loader';
 import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectSelectedItems } from '../redux/slices/selectedItemsSlice';
+import SelectedItems from '../components/SelectedItems';
 
 interface HomePageProps {
   isLoading: boolean;
@@ -26,6 +29,8 @@ export default function HomePage({
   currentPage,
   setCurrentPage,
 }: HomePageProps) {
+  const { selectedItems } = useSelector(selectSelectedItems);
+
   return (
     <div className="m-auto px-0 py-4 justify-between align-top">
       <ErrorBoundary isClichedErrorButton={isClichedErrorButton}>
@@ -64,6 +69,7 @@ export default function HomePage({
                 <Outlet />
               </div>
             </div>
+            {selectedItems.length && <SelectedItems />}
           </>
         )}
       </ErrorBoundary>
