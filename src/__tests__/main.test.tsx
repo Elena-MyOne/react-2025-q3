@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import App from '../App';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
+import { ThemeProvider } from '../theme/ThemeProvider';
 
 vi.mock('react-dom/client', () => ({
   createRoot: vi.fn(() => ({
@@ -13,7 +16,11 @@ describe('App root rendering', () => {
   it('renders the App component', () => {
     render(
       <BrowserRouter>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </BrowserRouter>
     );
 

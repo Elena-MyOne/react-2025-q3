@@ -6,6 +6,9 @@ import { BASE_URL, LOCAL_STORAGE_VALUE } from '../consts';
 import { server } from '../mocks/server';
 import { http, HttpResponse } from 'msw';
 import { ROUTE_PATHS } from '../routes';
+import { ThemeProvider } from '../theme/ThemeProvider';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 
 beforeEach(() => {
   localStorage.clear();
@@ -15,7 +18,11 @@ describe('App component', () => {
   it('renders Home page and fetches characters cards', async () => {
     render(
       <MemoryRouter initialEntries={[ROUTE_PATHS.HOME]}>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -29,7 +36,11 @@ describe('App component', () => {
   it('shows error boundary when error is triggered manually', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -47,7 +58,11 @@ describe('App component', () => {
   it('navigates to About page', async () => {
     render(
       <MemoryRouter initialEntries={[`/${ROUTE_PATHS.ABOUT}`]}>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -59,7 +74,11 @@ describe('App component', () => {
   it('renders Not found page for invalid route', () => {
     render(
       <MemoryRouter initialEntries={['/some']}>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -78,7 +97,11 @@ describe('App component', () => {
 
     render(
       <MemoryRouter initialEntries={[ROUTE_PATHS.HOME]}>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -92,7 +115,11 @@ describe('App component', () => {
   it('reads page and name params and navigates to next page', async () => {
     render(
       <MemoryRouter initialEntries={['/?name=rick&page=1']}>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -112,7 +139,11 @@ describe('App component', () => {
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <App />
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 

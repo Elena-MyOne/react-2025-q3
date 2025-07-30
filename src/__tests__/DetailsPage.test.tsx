@@ -3,13 +3,20 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import DetailsPage from '../pages/DetailsPage';
 import { mockCharacter } from '../mocks/mockCharacter';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
+import { ThemeProvider } from '../theme/ThemeProvider';
 
 const MockDetailsPage = (id: string) => {
   return render(
     <MemoryRouter initialEntries={[`/details/${id}`]}>
-      <Routes>
-        <Route path="/details/:id" element={<DetailsPage />} />
-      </Routes>
+      <Provider store={store}>
+        <ThemeProvider>
+          <Routes>
+            <Route path="/details/:id" element={<DetailsPage />} />
+          </Routes>
+        </ThemeProvider>
+      </Provider>
     </MemoryRouter>
   );
 };

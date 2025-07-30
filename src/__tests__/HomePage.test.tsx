@@ -6,6 +6,9 @@ import { BASE_URL } from '../consts';
 import HomePage from '../pages/HomePage';
 import { mockCharactersList } from '../mocks/mockCharactersList';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
+import { ThemeProvider } from '../theme/ThemeProvider';
 
 const baseProps = {
   isLoading: false,
@@ -26,7 +29,11 @@ describe('HomePage component', () => {
   it('displays loader when loading', async () => {
     render(
       <BrowserRouter>
-        <HomePage {...baseProps} isLoading={true} />
+        <Provider store={store}>
+          <ThemeProvider>
+            <HomePage {...baseProps} isLoading={true} />
+          </ThemeProvider>
+        </Provider>
       </BrowserRouter>
     );
     const loader = screen.getByText(/Loading .../i);
@@ -36,7 +43,11 @@ describe('HomePage component', () => {
   it('displays cards list after successful fetch', async () => {
     render(
       <BrowserRouter>
-        <HomePage {...baseProps} />
+        <Provider store={store}>
+          <ThemeProvider>
+            <HomePage {...baseProps} />
+          </ThemeProvider>
+        </Provider>
       </BrowserRouter>
     );
     const card1 = await screen.findByText(/Rick Sanchez/);
@@ -59,11 +70,15 @@ describe('HomePage component', () => {
 
     render(
       <BrowserRouter>
-        <HomePage
-          {...baseProps}
-          errorMessage="Data can not be downloaded"
-          characters={[]}
-        />
+        <Provider store={store}>
+          <ThemeProvider>
+            <HomePage
+              {...baseProps}
+              errorMessage="Data can not be downloaded"
+              characters={[]}
+            />
+          </ThemeProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -74,7 +89,11 @@ describe('HomePage component', () => {
   it('renders the error boundary button', () => {
     render(
       <BrowserRouter>
-        <HomePage {...baseProps} />
+        <Provider store={store}>
+          <ThemeProvider>
+            <HomePage {...baseProps} />
+          </ThemeProvider>
+        </Provider>
       </BrowserRouter>
     );
     expect(

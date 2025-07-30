@@ -57,6 +57,7 @@ export default function Header({ handleSearch }: HeaderProps) {
               type="submit"
               className="text-2xl cursor-pointer text-black border-[1px] border-transparent bg-green-500 hover:bg-green-600 p-2 duration-300"
               onClick={handleSearchButton}
+              data-testid="searchBtn"
             >
               <CiSearch />
             </button>
