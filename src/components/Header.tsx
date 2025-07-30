@@ -48,7 +48,7 @@ export default function Header({ handleSearch }: HeaderProps) {
           <div className="flex items-center">
             <input
               type="text"
-              className="grow border-gray-300 border-[1px] p-2 bg-white"
+              className="grow border-gray-300 border-[1px] p-2 bg-white text-gray-500"
               placeholder="Search..."
               value={value}
               onChange={handleChange}
