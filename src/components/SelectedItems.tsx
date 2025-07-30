@@ -5,8 +5,8 @@ import {
 } from '../redux/slices/selectedItemsSlice';
 import type { AppDispatch } from '../redux/store';
 import { useTheme } from '../hooks/useTheme';
-import { THEME } from '../consts';
 import type { CharacterData } from '../models/interfaces';
+import { getThemeBackgroundClass } from '../helpers/getThemeBackgroundClass';
 
 export default function SelectedItems() {
   const { selectedItems } = useSelector(selectSelectedItems);
@@ -46,7 +46,7 @@ export default function SelectedItems() {
   return (
     <>
       <div
-        className={`fixed bottom-0 right-10 ${theme === THEME.LIGHT ? 'bg-gray-50' : 'bg-black'} p-5 flex gap-12 items-center border border-black`}
+        className={`fixed bottom-0 right-10 ${getThemeBackgroundClass(theme)} p-5 flex gap-12 items-center border border-black`}
       >
         <button
           className="text-center cursor-pointer text-black duration-300 border-[1px] border border-transparent bg-green-400 hover:bg-green-500 p-2 my-4"

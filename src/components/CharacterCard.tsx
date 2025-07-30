@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { CharacterData } from '../models/interfaces';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
-import { THEME } from '../consts';
 import { IoHeart } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -10,6 +9,7 @@ import {
   setSelectedItems,
 } from '../redux/slices/selectedItemsSlice';
 import type { AppDispatch } from '../redux/store';
+import { getThemeBackgroundClass } from '../helpers/getThemeBackgroundClass';
 
 interface CharacterCardProps {
   character: CharacterData;
@@ -42,7 +42,7 @@ export default function CharacterCard({ character }: CharacterCardProps) {
 
   return (
     <div
-      className={`${theme === THEME.LIGHT ? 'bg-gray-50' : 'bg-black'}  hover:shadow-lg cursor-pointer duration-300 shadow-md border w-[300px] relative`}
+      className={`${getThemeBackgroundClass(theme)}  hover:shadow-lg cursor-pointer duration-300 shadow-md border w-[300px] relative`}
       data-testid="card"
     >
       <button
