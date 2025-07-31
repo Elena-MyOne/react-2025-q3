@@ -5,7 +5,7 @@ import { BASE_URL } from '../consts';
 import Loader from '../components/Loader';
 import type { CharacterData } from '../models/interfaces';
 import { useTheme } from '../hooks/useTheme';
-import { getThemeBackgroundClass } from '../helpers/getThemeBackgroundClass';
+import useThemeClasses from '../hooks/useThemeClasses';
 
 export default function DetailsPage() {
   const { id } = useParams();
@@ -15,6 +15,7 @@ export default function DetailsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [character, setCharacter] = useState<CharacterData | null>(null);
   const { theme } = useTheme();
+  const { bg } = useThemeClasses(theme);
 
   const getCharacterById = useCallback(async () => {
     setIsLoading(true);
@@ -40,7 +41,7 @@ export default function DetailsPage() {
   }, [getCharacterById, id]);
 
   return (
-    <div className={`${getThemeBackgroundClass(theme)} text-center mt-4`}>
+    <div className={`${bg} text-center mt-4`}>
       {isLoading ? (
         <div className="min-w-[300px] py-10">
           <Loader />

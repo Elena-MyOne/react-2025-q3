@@ -9,7 +9,7 @@ import {
   setSelectedItems,
 } from '../redux/slices/selectedItemsSlice';
 import type { AppDispatch } from '../redux/store';
-import { getThemeBackgroundClass } from '../helpers/getThemeBackgroundClass';
+import useThemeClasses from '../hooks/useThemeClasses';
 
 interface CharacterCardProps {
   character: CharacterData;
@@ -20,6 +20,7 @@ export default function CharacterCard({ character }: CharacterCardProps) {
   const { name, image, gender, species, id } = currentCharacter;
   const location = useLocation();
   const { theme } = useTheme();
+  const { bg } = useThemeClasses(theme);
 
   const { selectedItems } = useSelector(selectSelectedItems);
   const dispatch = useDispatch<AppDispatch>();
@@ -42,7 +43,7 @@ export default function CharacterCard({ character }: CharacterCardProps) {
 
   return (
     <div
-      className={`${getThemeBackgroundClass(theme)}  hover:shadow-lg cursor-pointer duration-300 shadow-md border w-[300px] relative`}
+      className={`${bg}  hover:shadow-lg cursor-pointer duration-300 shadow-md border w-[300px] relative`}
       data-testid="card"
     >
       <button
