@@ -2,7 +2,7 @@ export const LOCAL_STORAGE_VALUE = 'RickAndMorty';
 
 export const LOCAL_STORAGE_THEME = 'RickAndMortyTheme';
 
-export const BASE_URL = 'https://rickandmortyapi.com/api/character';
+export const BASE_URL = 'https://rickandmortyapi.com/api/';
 
 export const THEME = {
   LIGHT: 'light',

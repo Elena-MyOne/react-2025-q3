@@ -5,16 +5,11 @@ import imageDarck from '../assets/2.jpg';
 import { useTheme } from '../hooks/useTheme';
 import { THEME } from '../consts';
 
-interface LayoutProps {
-  value: string;
-  handleSearch(): Promise<void>;
-}
-
-export default function Layout({ value, handleSearch }: LayoutProps) {
+export default function Layout() {
   const { theme } = useTheme();
   return (
     <div className={theme}>
-      <Header value={value} handleSearch={handleSearch} />
+      <Header />
       <div
         className="min-h-screen bg-no-repeat bg-fixed bg-bottom bg-[length:100%_auto]"
         style={{

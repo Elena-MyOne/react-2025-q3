@@ -1,30 +1,33 @@
 import { CiSearch } from 'react-icons/ci';
 import { LOCAL_STORAGE_VALUE } from '../consts';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ROUTE_PATHS } from '../routes';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../redux/store';
+import { setCurrentPage, setSavedValue } from '../redux/slices/charactersSlice';
 import ThemeButton from './ThemeButton';
 
-interface HeaderProps {
-  value: string;
-  handleSearch(): Promise<void>;
-}
-
-export default function Header({ handleSearch }: HeaderProps) {
+export default function Header() {
   const [value, setValue] = useLocalStorage(LOCAL_STORAGE_VALUE, '');
+
+  const dispatch = useDispatch<AppDispatch>();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     setValue(event.currentTarget.value);
   };
 
   const handleSearchButton = () => {
-    localStorage.setItem(LOCAL_STORAGE_VALUE, value);
+    dispatch(setSavedValue(value));
+    dispatch(setCurrentPage(1));
+    searchParams.set('name', value);
+    setSearchParams(searchParams);
   };
 
   const handleSearchForm = (event: React.FormEvent) => {
     event.preventDefault();
     handleSearchButton();
-    handleSearch();
   };
 
   return (
