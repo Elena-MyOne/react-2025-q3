@@ -1,0 +1,116 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import App from '../App';
+import { LOCAL_STORAGE_VALUE } from '../consts';
+import { ROUTE_PATHS } from '../routes';
+import { ThemeProvider } from '../theme/ThemeProvider';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
+
+beforeEach(() => {
+  localStorage.clear();
+});
+
+describe('App component', () => {
+  it('renders Home page and fetches characters cards', async () => {
+    render(
+      <MemoryRouter initialEntries={[ROUTE_PATHS.HOME]}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/Rick and Morty/i)).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getAllByTestId('card').length).toBeGreaterThan(0)
+    );
+  });
+  it('shows error boundary when error is triggered manually', async () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const errorBtn = await screen.getByRole('button', {
+      name: /ErrorBoundary/i,
+    });
+    errorBtn.click();
+    expect(
+      await screen.findByText(/Please restart the page or try again later/i)
+    ).toBeInTheDocument();
+  });
+  it('navigates to About page', async () => {
+    render(
+      <MemoryRouter initialEntries={[`/${ROUTE_PATHS.ABOUT}`]}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(
+      screen.getByText(/This application was developed as part of/i)
+    ).toBeInTheDocument();
+  });
+  it('renders Not found page for invalid route', () => {
+    render(
+      <MemoryRouter initialEntries={['/some']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const notFoundText = screen.getByText(/Oh, man. Page not found/i);
+    expect(notFoundText).toBeInTheDocument();
+  });
+
+  it('reads page and name params and navigates to next page', async () => {
+    render(
+      <MemoryRouter initialEntries={['/?name=rick&page=1']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const nextButton = await screen.findByRole('button', {
+      name: /Next/i,
+    });
+    nextButton.click();
+    await waitFor(() => {
+      expect(screen.getByTestId(/page/i)).toHaveTextContent(/2/i);
+    });
+  });
+  it('uses name from localStorage if no search param is present', async () => {
+    localStorage.setItem(LOCAL_STORAGE_VALUE, 'rick');
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(localStorage.getItem(LOCAL_STORAGE_VALUE)).toBe('rick');
+      expect(screen.getByTestId(/page/i)).toHaveTextContent(/1/i);
+      expect(
+        screen.getByRole('heading', {
+          name: /Rick Sanchez/i,
+        })
+      ).toBeInTheDocument();
+    });
+  });
+});
