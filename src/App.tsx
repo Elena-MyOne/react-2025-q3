@@ -1,156 +1,16 @@
-import { Route, Routes, useSearchParams } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { ROUTE_PATHS } from './routes';
-import { useCallback, useEffect, useState } from 'react';
-import { BASE_URL, LOCAL_STORAGE_VALUE } from './consts';
-import type { CharactersData, CharacterData } from './models/interfaces';
 import Layout from './components/Layout';
 import NotFoundPage from './pages/NotFound';
 import AboutPage from './components/AboutPage';
 import DetailsPage from './pages/DetailsPage';
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isClichedErrorButton, setIsClichedErrorButton] = useState(false);
-  const [, setError] = useState<Error | null>(null);
-  const [characters, setCharacters] = useState<CharacterData[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const throwError = () => {
-    setIsClichedErrorButton(true);
-    console.error('Error: The Error boundary button was triggered');
-  };
-
-  const getSearchQuery = useCallback(() => {
-    const stored = localStorage.getItem(LOCAL_STORAGE_VALUE) || '';
-    setSearchQuery(stored);
-    return stored;
-  }, []);
-
-  const getCharacters = useCallback(async (page = 1) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${BASE_URL}?page=${page}`);
-      const data: CharactersData = await response.json();
-      setCharacters(data.results);
-      setTotalPages(data.info.pages);
-      setError(null);
-      setErrorMessage('');
-    } catch (err) {
-      setCharacters([]);
-      setError(err as Error);
-      setErrorMessage('Data can not be downloaded');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const updateSearchQuery = useCallback(
-    (name: string, page: number = 1) => {
-      setSearchQuery(name);
-      setCurrentPage(page);
-      setSearchParams({ name, page: String(page) });
-    },
-    [setSearchParams]
-  );
-
-  const handleSearch = useCallback(
-    async (page = 1) => {
-      const query = getSearchQuery();
-      if (!query) {
-        setErrorMessage('');
-        setError(null);
-        setSearchParams({ page: String(page) });
-        getCharacters();
-        return;
-      }
-
-      setIsLoading(true);
-      updateSearchQuery(query, page);
-
-      try {
-        const response = await fetch(
-          `${BASE_URL}/?name=${query.toLowerCase()}&page=${page}`
-        );
-        if (!response.ok) throw new Error(`Character "${query}" not found`);
-
-        const data = await response.json();
-        setCharacters(data.results);
-        setTotalPages(data.info.pages);
-        setError(null);
-        setErrorMessage('');
-      } catch (err) {
-        console.error(`Character ${query} not found:`, err);
-        setCharacters([]);
-        setError(err as Error);
-        setErrorMessage(
-          `Character "${query}" is not found, Please try searching for another one.`
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [getCharacters, getSearchQuery, setSearchParams, updateSearchQuery]
-  );
-
-  useEffect(() => {
-    const storedQuery = localStorage.getItem(LOCAL_STORAGE_VALUE);
-    if (storedQuery) {
-      handleSearch(currentPage);
-    } else {
-      getCharacters(currentPage);
-    }
-  }, [handleSearch, getCharacters, currentPage]);
-
-  useEffect(() => {
-    const pageFromUrl = parseInt(searchParams.get('page') || '1');
-    if (pageFromUrl !== currentPage) {
-      setCurrentPage(pageFromUrl);
-    }
-  }, [currentPage, searchParams]);
-
-  const updatePage = useCallback(
-    (page: number) => {
-      const currentSearchName = searchParams.get('name') || '';
-      setCurrentPage(page);
-      if (currentSearchName) {
-        setSearchParams({ page: String(page), name: currentSearchName });
-      } else {
-        setSearchParams({ page: String(page) });
-      }
-    },
-    [searchParams, setSearchParams]
-  );
-
-  useEffect(() => {
-    updatePage(currentPage);
-  }, [updatePage, currentPage]);
-
   return (
     <Routes>
-      <Route
-        path={ROUTE_PATHS.HOME}
-        element={<Layout value={searchQuery} handleSearch={handleSearch} />}
-      >
-        <Route
-          path={ROUTE_PATHS.HOME}
-          element={
-            <HomePage
-              isLoading={isLoading}
-              isClichedErrorButton={isClichedErrorButton}
-              characters={characters}
-              errorMessage={errorMessage}
-              throwError={throwError}
-              currentPage={currentPage}
-              setCurrentPage={updatePage}
-              pages={totalPages}
-            />
-          }
-        >
+      <Route path={ROUTE_PATHS.HOME} element={<Layout />}>
+        <Route path={ROUTE_PATHS.HOME} element={<HomePage />}>
           <Route path={ROUTE_PATHS.DETAILS} element={<DetailsPage />} />
         </Route>
         <Route path={ROUTE_PATHS.ABOUT} element={<AboutPage />} />

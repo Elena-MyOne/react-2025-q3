@@ -3,13 +3,20 @@ import { BrowserRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Header from '../components/Header';
 import { LOCAL_STORAGE_VALUE } from '../consts';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
+import { ThemeProvider } from '../theme/ThemeProvider';
 
 const mockHandleSearch = vi.fn().mockResolvedValue(undefined);
 
 const MockHeader = () => {
   return (
     <BrowserRouter>
-      <Header value="" handleSearch={mockHandleSearch} />
+      <Provider store={store}>
+        <ThemeProvider>
+          <Header value="" handleSearch={mockHandleSearch} />
+        </ThemeProvider>
+      </Provider>
     </BrowserRouter>
   );
 };
@@ -45,17 +52,6 @@ describe('Header component', () => {
       expect(inputElement.value).toBe('rick');
     });
 
-    it('saves input value in local storage', () => {
-      render(<MockHeader />);
-      const buttonElement = screen.getByRole('button') as HTMLButtonElement;
-      const inputElement = screen.getByPlaceholderText(
-        /Search.../i
-      ) as HTMLInputElement;
-      fireEvent.change(inputElement, { target: { value: 'rick' } });
-      fireEvent.click(buttonElement);
-      expect(localStorage.getItem(LOCAL_STORAGE_VALUE)).toBe('rick');
-    });
-
     it('retrieves the value from local storage upon mounting', () => {
       const initialValue = 'initialValue';
       localStorage.setItem(LOCAL_STORAGE_VALUE, initialValue);
@@ -64,6 +60,19 @@ describe('Header component', () => {
         /Search.../i
       ) as HTMLInputElement;
       expect(inputElement.value).toBe(initialValue);
+    });
+
+    it('saves input value in local storage', () => {
+      render(<MockHeader />);
+      const buttonElement = screen.getByTestId(
+        'searchBtn'
+      ) as HTMLButtonElement;
+      const inputElement = screen.getByPlaceholderText(
+        /Search.../i
+      ) as HTMLInputElement;
+      fireEvent.change(inputElement, { target: { value: 'rick' } });
+      fireEvent.click(buttonElement);
+      expect(localStorage.getItem(LOCAL_STORAGE_VALUE)).toBe('rick');
     });
   });
 });

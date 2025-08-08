@@ -6,6 +6,10 @@ export const handlers = [
     const url = new URL(request.url);
     const query = url.searchParams.get('page');
 
+    if (query === '1000') {
+      return HttpResponse.error();
+    }
+
     if (query === '1') {
       return HttpResponse.json(mockCharactersList, { status: 200 });
     }

@@ -1,45 +1,34 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ROUTE_PATHS } from '../routes';
-import { useCallback, useEffect, useState } from 'react';
-import { BASE_URL } from '../consts';
 import Loader from '../components/Loader';
 import type { CharacterData } from '../models/interfaces';
+import { useTheme } from '../hooks/useTheme';
+import useThemeClasses from '../hooks/useThemeClasses';
+import { useGetCharacterByIdQuery } from '../redux/api/apiSlice';
 
 export default function DetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [character, setCharacter] = useState<CharacterData | null>(null);
+  const { theme } = useTheme();
+  const { bg } = useThemeClasses(theme);
 
-  const getCharacterById = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${BASE_URL}/${id}`);
-
-      if (!response.ok) {
-        throw new Error('Network response error');
-      }
-
-      const data = await response.json();
-      setCharacter(data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Cannot get character by id', error);
-      setIsLoading(false);
-      setErrorMessage(`Cannot get character by id. Error: ${error}`);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    getCharacterById();
-  }, [getCharacterById, id]);
+  const {
+    data: character,
+    isFetching,
+    isError,
+  } = useGetCharacterByIdQuery(id ?? '', {
+    skip: !id,
+  }) as {
+    data?: CharacterData;
+    isFetching: boolean;
+    isError: boolean;
+  };
 
   return (
-    <div className="bg-white text-center mt-4">
-      {isLoading ? (
-        <div className="min-w-[300px]">
+    <div className={`${bg} text-center mt-4`}>
+      {isFetching ? (
+        <div className="min-w-[300px] py-10">
           <Loader />
         </div>
       ) : (
@@ -67,9 +56,7 @@ export default function DetailsPage() {
               </button>
             </div>
           )}
-          {errorMessage && (
-            <div className="text-red-600">Character not found</div>
-          )}
+          {isError && <div className="text-red-600">Character not found</div>}
         </>
       )}
     </div>

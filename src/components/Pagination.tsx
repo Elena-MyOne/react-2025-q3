@@ -32,8 +32,8 @@ export default function Pagination({
         disabled={!prevPage}
         className={`px-4 py-2 rounded duration-300 ${
           !prevPage
-            ? 'bg-gray-300 opacity-35 border border-black'
-            : 'bg-gray-300 cursor-pointer hover:bg-green-500 border border-black'
+            ? 'bg-gray-600 opacity-35 border border-black text-white'
+            : 'bg-gray-500 cursor-pointer hover:bg-green-500 border border-black text-white'
         }`}
       >
         Previous
@@ -46,7 +46,7 @@ export default function Pagination({
           <div className="">...</div>
           <button
             onClick={handleLastPage}
-            className="px-4 py-2 rounded duration-300 bg-gray-300 cursor-pointer hover:bg-green-500 border border-black"
+            className="px-4 py-2 rounded duration-300 bg-gray-500 cursor-pointer hover:bg-green-500 border border-black text-white"
           >
             {pages}
           </button>
@@ -57,8 +57,8 @@ export default function Pagination({
         disabled={!nextPage}
         className={`px-4 py-2 rounded duration-300 ${
           !nextPage
-            ? 'bg-gray-200 opacity-35 border border-black'
-            : 'bg-gray-200 cursor-pointer hover:bg-green-400 border border-black'
+            ? 'bg-gray-600 opacity-35 border border-black text-white'
+            : 'bg-gray-500 cursor-pointer hover:bg-green-400 border border-black text-white'
         }`}
       >
         Next
