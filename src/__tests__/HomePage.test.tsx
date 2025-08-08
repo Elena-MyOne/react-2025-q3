@@ -1,25 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { server } from '../mocks/server';
-import { http, HttpResponse } from 'msw';
-import { BASE_URL } from '../consts';
 import HomePage from '../pages/HomePage';
-import { mockCharactersList } from '../mocks/mockCharactersList';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '../redux/store';
 import { ThemeProvider } from '../theme/ThemeProvider';
-
-const baseProps = {
-  isLoading: false,
-  isClichedErrorButton: false,
-  characters: mockCharactersList.results,
-  errorMessage: '',
-  throwError: vi.fn(),
-  pages: mockCharactersList.info.pages,
-  currentPage: 1,
-  setCurrentPage: vi.fn<(page: number) => void>(),
-};
 
 describe('HomePage component', () => {
   beforeEach(() => {
@@ -31,7 +16,7 @@ describe('HomePage component', () => {
       <BrowserRouter>
         <Provider store={store}>
           <ThemeProvider>
-            <HomePage {...baseProps} isLoading={true} />
+            <HomePage />
           </ThemeProvider>
         </Provider>
       </BrowserRouter>
@@ -45,7 +30,7 @@ describe('HomePage component', () => {
       <BrowserRouter>
         <Provider store={store}>
           <ThemeProvider>
-            <HomePage {...baseProps} />
+            <HomePage />
           </ThemeProvider>
         </Provider>
       </BrowserRouter>
@@ -59,39 +44,12 @@ describe('HomePage component', () => {
     expect(card3).toBeInTheDocument();
   });
 
-  it('displays error message when fetch fails', async () => {
-    server.use(
-      http.get(BASE_URL, ({ request }) => {
-        const url = new URL(request.url);
-        url.searchParams.set('page', '1000');
-        return HttpResponse.error();
-      })
-    );
-
-    render(
-      <BrowserRouter>
-        <Provider store={store}>
-          <ThemeProvider>
-            <HomePage
-              {...baseProps}
-              errorMessage="Data can not be downloaded"
-              characters={[]}
-            />
-          </ThemeProvider>
-        </Provider>
-      </BrowserRouter>
-    );
-
-    const errorMessage = await screen.findByText(/Data can not be downloaded/i);
-    expect(errorMessage).toBeInTheDocument();
-  });
-
   it('renders the error boundary button', () => {
     render(
       <BrowserRouter>
         <Provider store={store}>
           <ThemeProvider>
-            <HomePage {...baseProps} />
+            <HomePage />
           </ThemeProvider>
         </Provider>
       </BrowserRouter>

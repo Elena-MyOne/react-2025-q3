@@ -21,6 +21,10 @@ export default function HomePage() {
     name,
   });
 
+  if (isError) {
+    console.log('Error occurred:', error);
+  }
+
   const throwError = () => {
     setIsClichedErrorButton(true);
     console.error('Error: The Error boundary button was triggered');

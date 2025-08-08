@@ -6,6 +6,7 @@ import { mockCharacter } from '../mocks/mockCharacter';
 import { Provider } from 'react-redux';
 import { store } from '../redux/store';
 import { ThemeProvider } from '../theme/ThemeProvider';
+import { apiSlice } from '../redux/api/apiSlice';
 
 const MockDetailsPage = (id: string) => {
   return render(
@@ -24,6 +25,7 @@ const MockDetailsPage = (id: string) => {
 describe('Details page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    store.dispatch(apiSlice.util.resetApiState());
   });
 
   it('displays loader when loading', () => {
@@ -51,35 +53,38 @@ describe('Details page', () => {
   });
 
   it('displays pokemon data when fetch is successful and hide component when close button is clicked', async () => {
-    global.fetch = vi.fn(
-      () =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockCharacter),
-        }) as Promise<Response>
+    global.fetch = vi.fn(() =>
+      Promise.resolve(
+        new Response(JSON.stringify(mockCharacter), {
+          status: 200,
+          headers: { 'Content-type': 'application/json' },
+        })
+      )
     );
 
     MockDetailsPage('1');
 
     await waitFor(() => {
-      const name = screen.getByRole('heading', { name: /Rick Sanchez/i });
-      const gender = screen.getByText(/Gender: Male/i);
-      const species = screen.getByText(/Species: Human/i);
-      const status = screen.getByText(/Status: Alive/i);
-      const type = screen.getByText(/Type: unknown/i);
-      const button = screen.getByRole('button', { name: /close details/i });
+      expect(screen.queryByText(/Loading .../i)).not.toBeInTheDocument();
+    });
 
-      expect(name).toBeInTheDocument();
-      expect(gender).toBeInTheDocument();
-      expect(species).toBeInTheDocument();
-      expect(status).toBeInTheDocument();
-      expect(type).toBeInTheDocument();
+    const name = screen.getByRole('heading', { name: /Rick Sanchez/i });
+    const gender = screen.getByText(/Gender: Male/i);
+    const species = screen.getByText(/Species: Human/i);
+    const status = screen.getByText(/Status: Alive/i);
+    const type = screen.getByText(/Type: unknown/i);
+    const button = screen.getByRole('button', { name: /close details/i });
 
-      fireEvent.click(button);
-      expect(name).not.toBeInTheDocument();
-      expect(status).not.toBeInTheDocument();
-      expect(type).not.toBeInTheDocument();
-      expect(button).not.toBeInTheDocument();
+    expect(name).toBeInTheDocument();
+    expect(gender).toBeInTheDocument();
+    expect(species).toBeInTheDocument();
+    expect(status).toBeInTheDocument();
+    expect(type).toBeInTheDocument();
+
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Rick Sanchez/i)).not.toBeInTheDocument();
     });
   });
 });
